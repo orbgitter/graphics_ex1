@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Graphics hw1 orr</title>
+        <link rel="stylesheet"  type="text/css" href="includes/style.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <div class= "wrapper">
+
+        </div>
+        <header>
+            <nav>
+
+            </nav>
+        </header>
+        <section>
+            <form id="draw-options">
+                <div class="form-group row">
+                 <label for="gear" class="col-sm-3 col-form-label">Choose the type of line to draw:</label>
+                     <div class="col-sm-8 row">
+                        <div class="col-sm-3">
+                             <label>Straight line<input type="radio" name="shapeRadioBtn" class="form-control" value="Line" checked></label>
+                        </div>
+                        <div class="col-sm-3">
+                             <label>Circle<input type="radio" name="shapeRadioBtn" class="form-control" value="Circle"></label>
+                        </div>
+                        <div class="col-sm-3">
+                             <label>Bezier Curve<input type="radio" name="shapeRadioBtn" class="form-control" value="BezierCurve"></label>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <canvas width="1000" height="1000"></canvas>            
+        </section>
+    </body>
+</html>
