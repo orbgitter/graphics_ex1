@@ -53,7 +53,8 @@ $(document).ready(function(){
             case  "BezierCurve":
                 if(pointArr.length === 4) {
                     console.log("drawing m bezier curve");
-                    drawBezierCurve(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y, pointArr[2].x, pointArr[2].y, pointArr[3].x, pointArr[3].y);
+                    drawBezierCurve(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y, 
+                                    pointArr[2].x, pointArr[2].y, pointArr[3].x, pointArr[3].y, $('input[name=bezierLines]').val());
                     pointArr = [];
                 }
                 break;
@@ -99,29 +100,34 @@ function drawCircle(context, centerX, centerY, diameterX, diameterY) {
     
 }
 
-function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y) {
+function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, lines) {
     const bezierMatrix = [[-1, 3, -3, 1], [3, -6, 3, 0], [-3, 3, 0, 0], [1, 0, 0, 0]];
     const pointVectorX = [p1x, p2x, p3x, p4x];
     const pointVectorY = [p1y, p2y, p3y, p4y];
 
-    const cx = multiplyMatrixByVector(bezierMatrix, pointVectorX)
-    const cy = multiplyMatrixByVector(bezierMatrix, pointVectorY)
+    const cx = multiplyMatrixByVector(bezierMatrix, pointVectorX);
+    const cy = multiplyMatrixByVector(bezierMatrix, pointVectorY);
 
-    for(let t = 0; t <= 1; t+=0.001) {
-        let point = new Point(
-            Math.pow(1 - t, 3) * cx[0] + Math.pow(1 - t, 2) * cx[1] + (1 - t) * cx[2] + cx[3],
-            Math.pow(1 - t, 3) * cy[0] + Math.pow(1 - t, 2) * cy[1] + (1 - t) * cy[2] + cy[3]
-        );
+    step = 1/lines;
+    for(let t = 0; t+step <= 1; t+=step) {
+        let startX = calculateCurvePoint(cx, 1-t);
+        let startY = calculateCurvePoint(cy, 1-t);
+        let endX = calculateCurvePoint(cx, 1-(t+step));
+        let endY = calculateCurvePoint(cy, 1-(t+step));
 
-        drawPixel(context, point);
+        drawLine(context, startX, startY, endX, endY);
     }
+}
+
+function calculateCurvePoint(coeffs, x) {
+    return Math.floor(Math.pow(x, 3) * coeffs[0] + Math.pow(x, 2) * coeffs[1] + x * coeffs[2] + coeffs[3])
 }
 
 function multiplyMatrixByVector(m, v) {
     result = new Array(m.length);
-    for (var i = 0; i < m.length; i++) {
+    for (let i = 0; i < m.length; i++) {
         result[i] = 0;
-        for (var j = 0; j < v.length; j++) {
+        for (let j = 0; j < v.length; j++) {
             result[i] += m[i][j] * v[j];
         }
     }
