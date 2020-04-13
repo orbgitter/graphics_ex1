@@ -91,14 +91,15 @@ function drawCircle(context, centerX, centerY, radiusX, radiusY) {
     
     while(y >= x) {
         plotCirclePoints(context, centerX, centerY, x, y)
-        x++;
         if(p >= 0)
         {
+            plotCirclePoints(context, centerX, centerY, x + 1, y)
             y--;
             p = p + 4 * (x - y) + 10;
         }
         else
             p = p + 4 * x + 6;
+        x++;
     }
 }
 
