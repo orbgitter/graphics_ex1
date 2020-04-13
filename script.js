@@ -36,7 +36,7 @@ $(document).ready(function(){
         switch(shapeSelected) {
             case "Line":
                 if(pointArr.length === 2) {
-                    console.log("drawing a line");
+                    console.log("drawing m line");
                     drawLine(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y);
                     pointArr = [];
                 }
@@ -44,7 +44,7 @@ $(document).ready(function(){
 
             case "Circle":
                 if(pointArr.length === 2) {
-                    console.log("drawing a circle");
+                    console.log("drawing m circle");
                     drawCircle(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y);
                     pointArr = [];
                 }
@@ -52,7 +52,7 @@ $(document).ready(function(){
             
             case  "BezierCurve":
                 if(pointArr.length === 4) {
-                    console.log("drawing a bezier curve");
+                    console.log("drawing m bezier curve");
                     drawBezierCurve(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y, pointArr[2].x, pointArr[2].y, pointArr[3].x, pointArr[3].y);
                     pointArr = [];
                 }
@@ -101,35 +101,30 @@ function drawCircle(context, centerX, centerY, diameterX, diameterY) {
 
 function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y) {
     const bezierMatrix = [[-1, 3, -3, 1], [3, -6, 3, 0], [-3, 3, 0, 0], [1, 0, 0, 0]];
-    const pointVectorX = [[p1x], [p2x], [p3x], [p4x]];
-    const pointVectorY = [[p1y], [p2y], [p3y], [p4y]];
+    const pointVectorX = [p1x, p2x, p3x, p4x];
+    const pointVectorY = [p1y, p2y, p3y, p4y];
 
-    const cx = multiplyMatrix(bezierMatrix, pointVectorX)
-    const cy = multiplyMatrix(bezierMatrix, pointVectorY)
+    const cx = multiplyMatrixByVector(bezierMatrix, pointVectorX)
+    const cy = multiplyMatrixByVector(bezierMatrix, pointVectorY)
 
     for(let t = 0; t <= 1; t+=0.001) {
         let point = new Point(
-            Math.pow(1 - t, 3) * cx[0][0] + Math.pow(1 - t, 2) * cx[1][0] + (1 - t) * cx[2][0] + cx[3][0],
-            Math.pow(1 - t, 3) * cy[0][0] + Math.pow(1 - t, 2) * cy[1][0] + (1 - t) * cy[2][0] + cy[3][0]
+            Math.pow(1 - t, 3) * cx[0] + Math.pow(1 - t, 2) * cx[1] + (1 - t) * cx[2] + cx[3],
+            Math.pow(1 - t, 3) * cy[0] + Math.pow(1 - t, 2) * cy[1] + (1 - t) * cy[2] + cy[3]
         );
 
         drawPixel(context, point);
     }
 }
 
-function multiplyMatrix(a, b) {
-    var aNumRows = a.length, aNumCols = a[0].length,
-        bNumRows = b.length, bNumCols = b[0].length,
-        m = new Array(aNumRows);
-    for (var r = 0; r < aNumRows; r++) {
-        m[r] = new Array(bNumCols);
-        for (var c = 0; c < bNumCols; c++) {
-            m[r][c] = 0;
-            for (var i = 0; i < aNumCols; i++) {
-                m[r][c] += a[r][i] * b[i][c];
-            }
+function multiplyMatrixByVector(m, v) {
+    result = new Array(m.length);
+    for (var i = 0; i < m.length; i++) {
+        result[i] = 0;
+        for (var j = 0; j < v.length; j++) {
+            result[i] += m[i][j] * v[j];
         }
     }
-    return m;
+    return result;
 }
   
