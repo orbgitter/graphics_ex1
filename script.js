@@ -1,4 +1,5 @@
-
+// Graphics Homework 1
+// Authors: Or, Mark
 
 class Point {
     constructor(x, y) {
@@ -12,9 +13,7 @@ function drawPixel(context, point) {
     context.stroke();
 }
 
-
-$(document).ready(function(){
-//    let choice =  $("input[name='shapeRadioBtn']:checked").val();
+$(document).ready(function() {
     let pointArr = [];
     let canvas = $("canvas");
     let context = canvas[0].getContext('2d');
@@ -30,8 +29,6 @@ $(document).ready(function(){
         let xPos = e.pageX - elem.offset().left;
         let yPos = e.pageY - elem.offset().top;
         pointArr.push(new Point(xPos, yPos));
-        //drawLine(context, point1.x, point1.y, point2.x, point2.y);   
-         //drawCircle(context, point1.x, point1.y, point2.x, point2.y); 
        
         switch(shapeSelected) {
             case "Line":
@@ -64,8 +61,6 @@ $(document).ready(function(){
     });
 });
 
-
-
 function drawLine(context, startX, startY, endX, endY) {
     let dx = Math.abs(endX - startX),
         sx = startX < endX ? 1 : -1;
@@ -88,16 +83,34 @@ function drawLine(context, startX, startY, endX, endY) {
     }
 }
 
-function drawCircle(context, centerX, centerY, diameterX, diameterY) {
-    let tempX2, tempY2;
-    radius = Math.pow((Math.pow(diameterX-centerX, 2)) + (Math.pow (diameterY-centerY, 2)), 0.5);
+function drawCircle(context, centerX, centerY, radiusX, radiusY) {
+    let x = 0, y, p;
+    radius = Math.pow((Math.pow(radiusX-centerX, 2)) + (Math.pow (radiusY-centerY, 2)), 0.5);
+    y = radius;
+    p = 3 - 2 * radius;
     
-     
-        let point = new Point(centerX, centerY);
-        
-        drawPixel(context, centerX, centerY, tempX2, tempY2);
-        //if (centerX === tempX2 && centerY === tempY2) break;   
-    
+    while(y >= x) {
+        plotCirclePoints(context, centerX, centerY, x, y)
+        x++;
+        if(p >= 0)
+        {
+            y--;
+            p = p + 4 * (x - y) + 10;
+        }
+        else
+            p = p + 4 * x + 6;
+    }
+}
+
+function plotCirclePoints(context, xc, yc, x, y) { 
+    drawPixel(context, new Point(xc+x, yc+y)); 
+    drawPixel(context, new Point(xc-x, yc+y)); 
+    drawPixel(context, new Point(xc+x, yc-y)); 
+    drawPixel(context, new Point(xc-x, yc-y)); 
+    drawPixel(context, new Point(xc+y, yc+x)); 
+    drawPixel(context, new Point(xc-y, yc+x)); 
+    drawPixel(context, new Point(xc+y, yc-x)); 
+    drawPixel(context, new Point(xc-y, yc-x)); 
 }
 
 function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, lines) {
