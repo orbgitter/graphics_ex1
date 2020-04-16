@@ -13,6 +13,7 @@ function drawPixel(context, point) {
     context.stroke();
 }
 
+// When page is loaded, get the marked updated radio button value
 $(document).ready(function() {
     let pointArr = [];
     let canvas = $("canvas");
@@ -24,6 +25,10 @@ $(document).ready(function() {
         pointArr = [];
     });
         
+    /*  Each click on the pink canvas board is saved and pushed into an array as a point with its x,y coordinates,
+        then switching according to the current radio value. There, each case checks if it got the relevant amount 
+        of points for its task, as line and circles require 2 points, and the Bezier curve requires 4 points. 
+    */
     canvas.click(function(e){
         let elem = $(this);
         let xPos = e.pageX - elem.offset().left;
@@ -61,6 +66,11 @@ $(document).ready(function() {
     });
 });
 
+/*  drawLine function receives the following arguments: the context board to draw on, and two points by their x, y coordinates
+    Then comparing between the 2 points' x values, and also between the 2 points' y values,
+    in order to know how to advance the drawing of a pixel (represented by the start point) the right way,
+    towards the end point, stopping down the "starting point" equals to the end point
+*/
 function drawLine(context, startX, startY, endX, endY) {
     let dx = Math.abs(endX - startX),
         sx = startX < endX ? 1 : -1;
@@ -83,9 +93,13 @@ function drawLine(context, startX, startY, endX, endY) {
     }
 }
 
-function drawCircle(context, centerX, centerY, radiusX, radiusY) {
+/*  drawCircle function receives the following arguments: the context board, the center point of the circle,
+    and a point on the circle. from which the radius is calculated (distance between center and point).
+    drawCircle implements the "Closed Corners Bresenheim circle" algorithm to draw a circle on the canvas.
+*/
+function drawCircle(context, centerX, centerY, pointX, pointY) {
     let x = 0, y, p;
-    radius = Math.pow((Math.pow(radiusX-centerX, 2)) + (Math.pow (radiusY-centerY, 2)), 0.5);
+    radius = Math.pow((Math.pow(pointX-centerX, 2)) + (Math.pow (pointY-centerY, 2)), 0.5);
     y = radius;
     p = 3 - 2 * radius;
     
@@ -103,6 +117,7 @@ function drawCircle(context, centerX, centerY, radiusX, radiusY) {
     }
 }
 
+// plotCirclepoints is used to draw all 8 symmetric positions of a pixel within the circle
 function plotCirclePoints(context, xc, yc, x, y) { 
     drawPixel(context, new Point(xc+x, yc+y)); 
     drawPixel(context, new Point(xc-x, yc+y)); 
@@ -114,6 +129,13 @@ function plotCirclePoints(context, xc, yc, x, y) {
     drawPixel(context, new Point(xc-y, yc-x)); 
 }
 
+/*
+    drawBezierCurve receives the following arguments: the context board, four points that represent the BezierCurve
+    p1 is the starting point, p2 is a control point for p1, p3 is a control point for p4, and p4 is an ending point,
+    the lines parameter determines how many lines will be used to draw the curve.
+    drawBezierCurve calculates the x and y coefficients by multiplying the bezier matrix by a vector of the 4 points.
+    The coefficients are then used in the polinomial to determine the points used to the draw the curve.
+*/
 function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, lines) {
     const bezierMatrix = [[-1, 3, -3, 1], [3, -6, 3, 0], [-3, 3, 0, 0], [1, 0, 0, 0]];
     const pointVectorX = [p1x, p2x, p3x, p4x];
@@ -133,10 +155,12 @@ function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, lines)
     }
 }
 
+// calculateCurvePoint returns the value (rounded down) of a 3rd degree polinomial with the given coefficients and x value
 function calculateCurvePoint(coeffs, x) {
     return Math.floor(Math.pow(x, 3) * coeffs[0] + Math.pow(x, 2) * coeffs[1] + x * coeffs[2] + coeffs[3])
 }
 
+// multiplyMatrixByVector returns an array representing the vector that results from multiplying matrix m by vector v
 function multiplyMatrixByVector(m, v) {
     result = new Array(m.length);
     for (let i = 0; i < m.length; i++) {
