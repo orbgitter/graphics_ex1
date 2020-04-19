@@ -37,7 +37,7 @@ $(document).ready(function() {
 
     // Change number of lines of last bezier curve
     $('input[name=bezierLines]').change(function(){
-        if(lastCurveArr !== [])
+        if(lastCurveArr.length !== 0)
         {
             context.putImageData(lastCanvasState, 0, 0);
             drawBezierCurve(context, lastCurveArr[0].x, lastCurveArr[0].y, lastCurveArr[1].x, lastCurveArr[1].y, 
