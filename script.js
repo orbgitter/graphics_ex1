@@ -32,7 +32,6 @@ $(document).ready(function() {
 
     // Choose color
     $('input[name=colorpicker]').change(function(){
-        console.log($( 'input[name=colorpicker]' ).val())
         context.strokeStyle = $( 'input[name=colorpicker]' ).val();
     });
 

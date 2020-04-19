@@ -13,25 +13,23 @@
     <div class="container">
         <header>
             <nav>
-                <form id="draw-options">
-                    <div class="form-group row">
-                        <label for="gear" class="col-sm-3 col-form-label">Choose the type of line to draw:<br><br>Choose line Color: <input type="color" name="colorpicker" value="#000000"></label>
-                        <div class="col-sm-8 row">
-                            <div class="col-sm-3">
-                                <label>Straight line<input type="radio" name="shapeRadioBtn" class="form-control" value="Line" checked></label>
-                            </div>
-                            <div class="col-sm-3">
-                                    <label>Circle<input type="radio" name="shapeRadioBtn" class="form-control" value="Circle"></label>
-                            </div>
-                            <div class="col-sm-3">
-                                    <label>Bezier Curve<input type="radio" name="shapeRadioBtn" class="form-control" value="BezierCurve"></label>
-                            </div>
-                            <div class="col-sm-3">
-                                <label>Curve Lines<input type="number" name="bezierLines" class="form-control" min="1" max="1000" value="500"></label>
-                            </div>
+                <div class="form-group row">
+                    <label for="gear" class="col-sm-3 col-form-label">Choose the type of line to draw:<br><br>Choose line Color: <input type="color" name="colorpicker" value="#000000"></label>
+                    <div class="col-sm-8 row">
+                        <div class="col-sm-3">
+                            <label>Straight line<input type="radio" name="shapeRadioBtn" class="form-control" value="Line" checked></label>
+                        </div>
+                        <div class="col-sm-3">
+                                <label>Circle<input type="radio" name="shapeRadioBtn" class="form-control" value="Circle"></label>
+                        </div>
+                        <div class="col-sm-3">
+                                <label>Bezier Curve<input type="radio" name="shapeRadioBtn" class="form-control" value="BezierCurve"></label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Curve Segments<input type="number" name="bezierLines" class="form-control" min="1" max="1000" value="500"></label>
                         </div>
                     </div>
-                </form>
+                </div>
             </nav>
         </header>
         <canvas width="1000" height="1000"></canvas>            
