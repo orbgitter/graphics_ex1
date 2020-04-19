@@ -9,20 +9,41 @@ class Point {
 }
 
 function drawPixel(context, point) {
+    context.beginPath();
     context.rect(point.x, point.y, 1, 1);
     context.stroke();
+    context.closePath();
 }
 
 // When page is loaded, get the marked updated radio button value
 $(document).ready(function() {
+    var lastCanvasState, lastCurveArr;
     let pointArr = [];
     let canvas = $("canvas");
     let context = canvas[0].getContext('2d');
     let shapeSelected = $( 'input[name=shapeRadioBtn]:checked' ).val();
+    context.strokeStyle = $( 'input[name=colorpicker]' ).val();
 
+    // Choose type of line
     $('input[name=shapeRadioBtn]').change(function(){
         shapeSelected = $( 'input[name=shapeRadioBtn]:checked' ).val();
         pointArr = [];
+    });
+
+    // Choose color
+    $('input[name=colorpicker]').change(function(){
+        console.log($( 'input[name=colorpicker]' ).val())
+        context.strokeStyle = $( 'input[name=colorpicker]' ).val();
+    });
+
+    // Change number of lines of last bezier curve
+    $('input[name=bezierLines]').change(function(){
+        if(lastCurveArr !== [])
+        {
+            context.putImageData(lastCanvasState, 0, 0);
+            drawBezierCurve(context, lastCurveArr[0].x, lastCurveArr[0].y, lastCurveArr[1].x, lastCurveArr[1].y, 
+                lastCurveArr[2].x, lastCurveArr[2].y, lastCurveArr[3].x, lastCurveArr[3].y, $('input[name=bezierLines]').val());
+        }
     });
         
     /*  Each click on the pink canvas board is saved and pushed into an array as a point with its x,y coordinates,
@@ -34,11 +55,12 @@ $(document).ready(function() {
         let xPos = e.pageX - elem.offset().left;
         let yPos = e.pageY - elem.offset().top;
         pointArr.push(new Point(xPos, yPos));
+        lastCurveArr = [];
        
         switch(shapeSelected) {
             case "Line":
                 if(pointArr.length === 2) {
-                    console.log("drawing m line");
+                    console.log("drawing line");
                     drawLine(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y);
                     pointArr = [];
                 }
@@ -46,7 +68,7 @@ $(document).ready(function() {
 
             case "Circle":
                 if(pointArr.length === 2) {
-                    console.log("drawing m circle");
+                    console.log("drawing circle");
                     drawCircle(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y);
                     pointArr = [];
                 }
@@ -54,9 +76,11 @@ $(document).ready(function() {
             
             case  "BezierCurve":
                 if(pointArr.length === 4) {
-                    console.log("drawing m bezier curve");
+                    console.log("drawing bezier curve");
+                    lastCanvasState = context.getImageData(0,0,canvas.width(),canvas.height());
                     drawBezierCurve(context, pointArr[0].x, pointArr[0].y, pointArr[1].x, pointArr[1].y, 
                                     pointArr[2].x, pointArr[2].y, pointArr[3].x, pointArr[3].y, $('input[name=bezierLines]').val());
+                    lastCurveArr = pointArr;
                     pointArr = [];
                 }
                 break;
@@ -145,7 +169,7 @@ function drawBezierCurve(context, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, lines)
     const cy = multiplyMatrixByVector(bezierMatrix, pointVectorY);
 
     step = 1/lines;
-    for(let t = 0; t+step <= 1; t+=step) {
+    for(let t = 0; Math.floor((t+step)*100)/100 <= 1; t+=step) {
         let startX = calculateCurvePoint(cx, 1-t);
         let startY = calculateCurvePoint(cy, 1-t);
         let endX = calculateCurvePoint(cx, 1-(t+step));
